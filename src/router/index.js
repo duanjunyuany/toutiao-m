@@ -4,7 +4,35 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-  { path: '/login', name: 'login', component: () => import('@/views/login') }
+  { path: '/login', name: 'login', component: () => import('@/views/login') },
+  {
+    path: '/',
+    // 使用重定向跳转到子路由
+    redirect: '/home',
+    component: () => import('@/views/layout'),
+    children: [
+      {
+        path: 'home',
+        name: 'home',
+        component: () => import('@/views/home')
+      },
+      {
+        path: 'qa',
+        name: 'qa',
+        component: () => import('@/views/qa')
+      },
+      {
+        path: 'video',
+        name: 'video',
+        component: () => import('@/views/vide')
+      },
+      {
+        path: 'my',
+        name: 'my',
+        component: () => import('@/views/my')
+      }
+    ]
+  }
 ]
 
 const router = new VueRouter({

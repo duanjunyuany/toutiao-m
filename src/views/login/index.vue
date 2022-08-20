@@ -1,7 +1,9 @@
 <template>
   <div class="login-container">
     <!-- 导航栏 -->
-    <van-nav-bar title="登录" />
+    <van-nav-bar title="登录">
+      <van-icon slot="left" name="cross" @click="$router.back()" />
+    </van-nav-bar>
     <!-- 表单 -->
     <van-form @submit="onSubmit" ref="loginForm">
       <van-field
@@ -97,6 +99,8 @@ export default {
         this.$store.commit('setUserToken', data.data)
         // 提示success或fail时会先把其他的toast清除掉
         this.$toast.success('登录成功')
+        // 登录成功，跳转到原来页面，back方式不严谨
+        this.$router.back()
       } catch (err) {
         // console.log('登录失败', err)
         this.$toast.fail('登录失败，手机号或验证码错误')
