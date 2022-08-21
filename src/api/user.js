@@ -1,5 +1,6 @@
 // 用户相关的请求模块
 import request from '@/utils/request'
+// import store from '@/store'
 // 用户登录
 const login = data => {
   return request({
@@ -15,4 +16,16 @@ const sendCode = mobile => {
     url: `/v1_0/sms/codes/${mobile}`
   })
 }
-export { login, sendCode }
+// 获取用户信息
+const getUserInfo = () => {
+  return request({
+    method: 'GET',
+    url: '/v1_0/user'
+    // 发送请求头，验证身份
+    // headers: {
+    //   // token的格式Bearer xxxxx
+    //   Authorization: `Bearer ${store.state.user.token}`
+    // }
+  })
+}
+export { login, sendCode, getUserInfo }
