@@ -22,27 +22,41 @@
         <article-list :channel="channel" />
       </van-tab>
       <div slot="nav-right" class="placeholder"></div>
-      <div slot="nav-right" class="hamburger-btn">
+      <div slot="nav-right" class="hamburger-btn" @click="isChannelEdit = true">
         <i class="toutiao toutiao-gengduo"></i>
       </div>
     </van-tabs>
+    <!-- 频道编辑弹出层 -->
+    <van-popup
+      v-model="isChannelEdit"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <channel-edit :myChannels="channels" />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/user.js'
 import ArticleList from './components/article-list.vue'
+import ChannelEdit from './components/channel-edit.vue'
 
 export default {
   name: 'HomePage',
   components: {
-    ArticleList
+    ArticleList,
+    ChannelEdit
   },
   data () {
     return {
       active: 0,
       // 频道列表
-      channels: []
+      channels: [],
+      // 控制编辑频道弹出层
+      isChannelEdit: false
     }
   },
   methods: {
