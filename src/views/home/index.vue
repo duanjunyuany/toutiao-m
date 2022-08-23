@@ -34,7 +34,7 @@
       position="bottom"
       :style="{ height: '100%' }"
     >
-      <channel-edit :myChannels="channels" />
+      <channel-edit :myChannels="channels" :active="active" @updateActive="onUpdateActive" />
     </van-popup>
   </div>
 </template>
@@ -43,12 +43,17 @@
 import { getUserChannels } from '@/api/user.js'
 import ArticleList from './components/article-list.vue'
 import ChannelEdit from './components/channel-edit.vue'
+import { mapState } from 'vuex'
+import { getItem } from '@/utils/storage.js'
 
 export default {
   name: 'HomePage',
   components: {
     ArticleList,
     ChannelEdit
+  },
+  computed: {
+    ...mapState(['user'])
   },
   data () {
     return {
@@ -63,12 +68,31 @@ export default {
     // 获取频道
     async loadChannels () {
       try {
-        const { data } = await getUserChannels()
-        // console.log(data)
-        this.channels = data.data.channels
+        let channels = []
+        if (this.user) {
+          // 已登录，请求获取用户频道列表
+          const { data } = await getUserChannels()
+          channels = data.data.channels
+        } else {
+          // 未登录，判断是否本地有列表数据
+          const localChannels = getItem('TOUTIAO_CHANNELS')
+          // 有就拿来用
+          if (localChannels) {
+            channels = localChannels
+          } else {
+            // 没有就请求默认列表
+            const { data } = await getUserChannels()
+            channels = data.data.channels
+          }
+        }
+        this.channels = channels
       } catch (err) {
         this.$toast('获取频道失败')
       }
+    },
+    onUpdateActive (index, isShow = true) {
+      this.active = index
+      this.isChannelEdit = isShow
     }
   },
   created () {
