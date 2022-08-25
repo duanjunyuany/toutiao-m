@@ -12,6 +12,8 @@ module.exports = {
       },
       // 应用与全部样式
       propList: ['*'],
+      // 排除不要转换的样式
+      exclude: 'github-markdown'
     }
   }
 }

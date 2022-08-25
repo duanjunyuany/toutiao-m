@@ -6,7 +6,7 @@ Vue.use(VueRouter)
 const routes = [
   { path: '/login', name: 'login', component: () => import('@/views/login') },
   { path: '/search', name: 'search', component: () => import('@/views/search') },
-  { path: '/article/:artId', name: 'article', component: () => import('@/views/article') },
+  { path: '/article/:articleId', name: 'article', component: () => import('@/views/article'), props: true },
   {
     path: '/',
     // 使用重定向跳转到子路由
