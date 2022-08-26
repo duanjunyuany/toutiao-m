@@ -64,6 +64,11 @@
         <!-- 文章内容 -->
         <div class="article-content markdown-body" v-html="article.content" ref="article-content"></div>
         <van-divider>正文结束</van-divider>
+        <!-- 文章评论 -->
+        <comment-list
+          :source="article.art_id"
+          @totalCount="commentCount = $event.total_count"
+        />
         <!-- 底部区域 -->
         <div class="article-bottom">
           <van-button
@@ -75,7 +80,7 @@
           </van-button>
           <van-icon
             name="comment-o"
-            badge="123"
+            :badge="commentCount"
             color="#777"
           />
           <collect-article
@@ -115,13 +120,15 @@ import { ImagePreview } from 'vant'
 import FollowButton from '@/components/follow-user'
 import CollectArticle from '@/components/collect-atricle'
 import LikeArticle from '@/components/like-article'
+import CommentList from './components/comment.vue'
 
 export default {
   name: 'ArticlePage',
   components: {
     FollowButton,
     CollectArticle,
-    LikeArticle
+    LikeArticle,
+    CommentList
   },
   props: {
     articleId: {
@@ -137,7 +144,8 @@ export default {
       // 失败的状态码
       status: 0,
       // 按钮加载
-      followLoading: false
+      followLoading: false,
+      commentCount: 0
     }
   },
   methods: {
