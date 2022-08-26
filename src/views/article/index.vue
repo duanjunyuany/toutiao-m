@@ -28,24 +28,71 @@
           />
           <div slot="title" class="user-name">{{article.aut_name}}</div>
           <div slot="label" class="publish-date">{{article.pubdate | relativeTime}}</div>
+          <!-- :isFollowed="article.is_followed"
+          @updateFollow="article.is_followed = $event"
+            可以简写，在组件上使用v-model，相当于下面代码
+          value="article.is_followed" 传入的值必须是value
+          @input="article.is_followed=$event" 监听input事件 -->
+          <follow-button
+            v-model="article.is_followed"
+            :userId="article.aut_id"
+            class="follow-btn"
+          >
+          </follow-button>
+          <!-- <van-button
+            v-if="article.is_followed"
+            class="follow-btn"
+            round
+            size="small"
+            :loading="followLoading"
+            @click="onFollow"
+          >已关注
+          </van-button>
           <van-button
+            v-else
             class="follow-btn"
             type="info"
             color="#3296fa"
             round
             size="small"
             icon="plus"
+            :loading="followLoading"
+            @click="onFollow"
           >关注
-          </van-button>
-          <!-- <van-button
-            class="follow-btn"
-            round
-            size="small"
-          >已关注</van-button> -->
+          </van-button> -->
         </van-cell>
         <!-- 文章内容 -->
         <div class="article-content markdown-body" v-html="article.content" ref="article-content"></div>
         <van-divider>正文结束</van-divider>
+        <!-- 底部区域 -->
+        <div class="article-bottom">
+          <van-button
+            class="comment-btn"
+            type="default"
+            round
+            size="small"
+          >写评论
+          </van-button>
+          <van-icon
+            name="comment-o"
+            badge="123"
+            color="#777"
+          />
+          <collect-article
+            v-model="article.is_collected"
+            :articleId="article.art_id"
+            class="btn-item"
+          />
+          <like-article
+            v-model="article.attitude"
+            class="btn-item"
+            :articleId="article.art_id"
+          />
+          <van-icon
+            name="share"
+            color="#777"
+          />
+        </div>
       </div>
       <!-- 加载失败：404 -->
       <div v-else-if="status === 404" class="error-wrap">
@@ -59,40 +106,23 @@
         <van-button class="retry-btn" @click="loadArticle">点击重试</van-button>
       </div>
     </div>
-    <!-- 底部区域 -->
-    <div class="article-bottom">
-      <van-button
-        class="comment-btn"
-        type="default"
-        round
-        size="small"
-      >写评论
-      </van-button>
-      <van-icon
-        name="comment-o"
-        badge="123"
-        color="#777"
-      />
-      <van-icon
-        color="#777"
-        name="star-o"
-      />
-      <van-icon
-        color="#777"
-        name="good-job-o"
-      />
-      <van-icon name="share" color="#777777"></van-icon>
-    </div>
   </div>
 </template>
 
 <script>
 import { getArticleById } from '@/api/article.js'
 import { ImagePreview } from 'vant'
+import FollowButton from '@/components/follow-user'
+import CollectArticle from '@/components/collect-atricle'
+import LikeArticle from '@/components/like-article'
 
 export default {
   name: 'ArticlePage',
-  components: {},
+  components: {
+    FollowButton,
+    CollectArticle,
+    LikeArticle
+  },
   props: {
     articleId: {
       type: [Number, String],
@@ -105,7 +135,9 @@ export default {
       // 加载状态
       loading: true,
       // 失败的状态码
-      status: 0
+      status: 0,
+      // 按钮加载
+      followLoading: false
     }
   },
   methods: {
@@ -250,12 +282,25 @@ export default {
       line-height: 46px;
       color: #a7a7a7;
     }
-    .van-icon {
+    /deep/ .van-icon {
       font-size: 40px;
       .van-info {
         font-size: 16px;
         background-color: #e22829;
       }
+    }
+    .btn-item {
+      border: none;
+      padding: 0;
+      height: 40px;
+      line-height: 40px;
+      color: #777;
+    }
+    .collect-btn--collected {
+      color: #ffa500;
+    }
+    .like-btn--liked {
+      color: #e5645f;
     }
   }
 }
