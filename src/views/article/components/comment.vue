@@ -21,6 +21,7 @@
 <script>
 import { getComments } from '@/api/comment.js'
 import CommentItem from './comment-item.vue'
+import bus from '@/utils/eventBus.js'
 
 export default {
   name: 'CommentList',
@@ -96,6 +97,10 @@ export default {
   },
   created () {
     this.onLoad()
+    // 接收新增的评论并添加到列表头部
+    bus.$on('addOneComment', val => {
+      this.list.unshift(val.new_obj)
+    })
   }
 }
 </script>

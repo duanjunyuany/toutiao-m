@@ -76,6 +76,7 @@
             type="default"
             round
             size="small"
+            @click="isPostShow = true"
           >写评论
           </van-button>
           <van-icon
@@ -103,7 +104,7 @@
           v-model="isPostShow"
           position="bottom"
         >
-          <comment-post :target="article.art_id" @postSuccess="onPostSuccess" />
+          <comment-post :target="article.art_id" @postSuccess="isPostShow = false" />
         </van-popup>
       </div>
       <!-- 加载失败：404 -->
@@ -191,11 +192,6 @@ export default {
           })
         }
       })
-    },
-    onPostSuccess () {
-      // 关闭弹出层
-      this.isPostShow = false
-      // 将发布内容添加到列表头部
     }
   },
   created () {
