@@ -59,5 +59,12 @@ const getUserProfile = () => {
     url: '/v1_0/user/profile'
   })
 }
-
-export { login, sendCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile }
+// 编辑用户个人资料
+const updateUserProfile = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/profile',
+    data: data
+  })
+}
+export { login, sendCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile, updateUserProfile }
