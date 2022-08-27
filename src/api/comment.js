@@ -26,5 +26,12 @@ const deleteCommentLike = target => {
     url: `/v1_0/comment/likings/${target}`
   })
 }
-
-export { getComments, addCommentLike, deleteCommentLike }
+// 发布评论或评论回复
+const addComment = data => {
+  return request({
+    method: 'POST',
+    url: '/v1_0/comments',
+    data: data
+  })
+}
+export { getComments, addCommentLike, deleteCommentLike, addComment }

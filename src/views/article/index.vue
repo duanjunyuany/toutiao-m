@@ -98,6 +98,13 @@
             color="#777"
           />
         </div>
+        <!-- 发布评论 -->
+        <van-popup
+          v-model="isPostShow"
+          position="bottom"
+        >
+          <comment-post :target="article.art_id" @postSuccess="onPostSuccess" />
+        </van-popup>
       </div>
       <!-- 加载失败：404 -->
       <div v-else-if="status === 404" class="error-wrap">
@@ -121,6 +128,7 @@ import FollowButton from '@/components/follow-user'
 import CollectArticle from '@/components/collect-atricle'
 import LikeArticle from '@/components/like-article'
 import CommentList from './components/comment.vue'
+import CommentPost from './components/comment-post.vue'
 
 export default {
   name: 'ArticlePage',
@@ -128,7 +136,8 @@ export default {
     FollowButton,
     CollectArticle,
     LikeArticle,
-    CommentList
+    CommentList,
+    CommentPost
   },
   props: {
     articleId: {
@@ -145,7 +154,9 @@ export default {
       status: 0,
       // 按钮加载
       followLoading: false,
-      commentCount: 0
+      commentCount: 0,
+      // 控制发布评论的显示
+      isPostShow: false
     }
   },
   methods: {
@@ -180,6 +191,11 @@ export default {
           })
         }
       })
+    },
+    onPostSuccess () {
+      // 关闭弹出层
+      this.isPostShow = false
+      // 将发布内容添加到列表头部
     }
   },
   created () {
