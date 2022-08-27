@@ -106,6 +106,13 @@
         >
           <comment-post :target="article.art_id" @postSuccess="isPostShow = false" />
         </van-popup>
+        <!-- 回复评论 -->
+        <van-popup
+          v-model="isReplyShow"
+          position="bottom"
+        >
+          <comment-reply :comment="currentComment" v-if="isReplyShow" @clickClose="isReplyShow = false" />
+        </van-popup>
       </div>
       <!-- 加载失败：404 -->
       <div v-else-if="status === 404" class="error-wrap">
@@ -130,6 +137,8 @@ import CollectArticle from '@/components/collect-atricle'
 import LikeArticle from '@/components/like-article'
 import CommentList from './components/comment.vue'
 import CommentPost from './components/comment-post.vue'
+import bus from '@/utils/eventBus.js'
+import CommentReply from './components/comment-reply.vue'
 
 export default {
   name: 'ArticlePage',
@@ -138,7 +147,8 @@ export default {
     CollectArticle,
     LikeArticle,
     CommentList,
-    CommentPost
+    CommentPost,
+    CommentReply
   },
   props: {
     articleId: {
@@ -157,7 +167,11 @@ export default {
       followLoading: false,
       commentCount: 0,
       // 控制发布评论的显示
-      isPostShow: false
+      isPostShow: false,
+      // 控制回复弹层的显示
+      isReplyShow: false,
+      // 点击回复的那个评论对象
+      currentComment: {}
     }
   },
   methods: {
@@ -196,6 +210,10 @@ export default {
   },
   created () {
     this.loadArticle()
+    bus.$on('clickReply', (comment) => {
+      this.currentComment = comment
+      this.isReplyShow = true
+    })
   }
 }
 </script>

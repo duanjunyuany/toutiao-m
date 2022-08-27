@@ -25,7 +25,8 @@
         <van-button
           class="reply-btn"
           round
-        >回复{{comment.reply_count}}
+          @click="onClickReply"
+        >{{comment.reply_count ?  '回复${comment.reply_count}' : '回复'}}
         </van-button>
       </div>
     </div>
@@ -34,6 +35,7 @@
 
 <script>
 import { addCommentLike, deleteCommentLike } from '@/api/comment.js'
+import bus from '@/utils/eventBus.js'
 
 export default {
   name: 'CommentItem',
@@ -69,6 +71,9 @@ export default {
         this.$toast('操作失败，稍后重试')
       }
       this.commentLoading = false
+    },
+    onClickReply () {
+      bus.$emit('clickReply', this.comment)
     }
   }
 }

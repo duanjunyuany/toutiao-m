@@ -1,7 +1,7 @@
 // 评论请求模块
 import request from '@/utils/request'
 
-// 获取文章评论
+// 获取文章评论或评论回复
 const getComments = params => {
   return request({
     method: 'GET',
