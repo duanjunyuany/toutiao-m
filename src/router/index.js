@@ -7,6 +7,7 @@ const routes = [
   { path: '/login', name: 'login', component: () => import('@/views/login') },
   { path: '/search', name: 'search', component: () => import('@/views/search') },
   { path: '/article/:articleId', name: 'article', component: () => import('@/views/article'), props: true },
+  { path: '/user/profile', name: 'userprofile', component: () => import('@/views/userprofile') },
   {
     path: '/',
     // 使用重定向跳转到子路由
