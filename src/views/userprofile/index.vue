@@ -3,7 +3,13 @@
     <!-- 导航栏 -->
     <van-nav-bar title="个人信息" class="van-nav-bar" left-arrow @click-left="$router.back()" />
     <!-- 个人信息 -->
-    <van-cell title="头像" is-link>
+    <input
+      type="file"
+      hidden
+      ref="file"
+      @change="onFileChange"
+    />
+    <van-cell title="头像" is-link @click="$refs.file.click()">
         <van-image class="img" fit="cover" round :src="user.photo" />
     </van-cell>
     <van-cell @click="isUpdateNameShow = true" title="昵称" :value="user.name" is-link />
@@ -21,6 +27,10 @@
     <van-popup v-model="isUpdateBirthdayShow" position="bottom">
       <update-birthday v-if="isUpdateBirthdayShow" @close="isUpdateBirthdayShow = false" v-model="user.birthday" />
     </van-popup>
+    <!-- 编辑头像 -->
+    <van-popup v-model="isUpdatePhotoShow" style="height: 100%" position="bottom">
+      <update-photo :img="img" @close="isUpdatePhotoShow = false" />
+    </van-popup>
   </div>
 </template>
 
@@ -29,20 +39,24 @@ import { getUserProfile } from '@/api/user.js'
 import UpdateName from './components/update-name.vue'
 import UpdateGender from './components/update-gender.vue'
 import UpdateBirthday from './components/update-birthday.vue'
+import UpdatePhoto from './components/update-photo.vue'
 
 export default {
   name: 'UserprofilePage',
   components: {
     UpdateName,
     UpdateGender,
-    UpdateBirthday
+    UpdateBirthday,
+    UpdatePhoto
   },
   data () {
     return {
       user: {},
       isUpdateNameShow: false,
       isUpdateGenderShow: false,
-      isUpdateBirthdayShow: false
+      isUpdateBirthdayShow: false,
+      isUpdatePhotoShow: false,
+      img: null
     }
   },
   methods: {
@@ -53,6 +67,16 @@ export default {
       } catch (error) {
         this.$toast('获取信息失败')
       }
+    },
+    onFileChange () {
+      // 获取文件对象
+      const file = this.$refs.file.files[0]
+      // 基于文件对象获取blob数据
+      this.img = window.URL.createObjectURL(file)
+      // 展示预览图片弹出层
+      this.isUpdatePhotoShow = true
+      // 如果选择同一个文件则不会触发change事件，需要在每次使用后，把value清空
+      this.$refs.file.value = ''
     }
   },
   created () {
