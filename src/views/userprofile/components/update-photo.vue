@@ -1,14 +1,18 @@
 <template>
   <div class="update-photo">
-    <img :src="img" class="img">
+    <img :src="img" class="img" ref="img">
     <div class="toolbar">
       <div class="cancel" @click="$emit('close')">取消</div>
-      <div class="confirm">完成</div>
+      <div class="confirm" @click="onConfirm">完成</div>
     </div>
   </div>
 </template>
 
 <script>
+import 'cropperjs/dist/cropper.css'
+import Cropper from 'cropperjs'
+import { updateUserPhoto } from '@/api/user.js'
+
 export default {
   name: 'UpdatePhoto',
   props: {
@@ -16,6 +20,56 @@ export default {
       type: [String, Object],
       required: true
     }
+  },
+  data () {
+    return {
+      cropper: null
+    }
+  },
+  methods: {
+    onConfirm () {
+      // 纯客户端裁切获取裁切的文件对象
+      this.cropper.getCroppedCanvas().toBlob(blob => {
+        this.updateUserPhoto(blob)
+      })
+    },
+    async updateUserPhoto (blob) {
+      this.$toast.loading({
+        message: '保存中...',
+        forbidClick: true,
+        duration: 0
+      })
+      try {
+        // updateUserPhoto({
+        //   photo: blob
+        // })
+        // 如果接口要求Content-Type是application/json则传递普通JS对象
+        // 如果接口要求Content-Type是multipart/form-data则必须传递FormData对象
+        const formData = new FormData()
+        formData.append('photo', blob)
+        const { data } = await updateUserPhoto(formData)
+        console.log(data.data.photo)
+        // 关闭弹出层
+        this.$emit('close')
+        // 更新视图
+        this.$emit('update-photo', data.data.photo)
+        this.$toast.success('更新成功')
+      } catch (error) {
+        this.$toast.fail('更新失败')
+      }
+    }
+  },
+  mounted () {
+    const image = this.$refs.img
+    this.cropper = new Cropper(image, {
+      viewMode: 1,
+      dragMode: 'move',
+      aspectRatio: 1,
+      autoCropArea: 1,
+      cropBoxMovable: false,
+      cropBoxResizable: false,
+      background: false
+    })
   }
 }
 </script>
@@ -26,6 +80,7 @@ export default {
   height: 100%;
   color: #fff;
   .img {
+    display: block;
     max-width: 100%;
   }
   .toolbar {

@@ -67,4 +67,13 @@ const updateUserProfile = data => {
     data: data
   })
 }
-export { login, sendCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile, updateUserProfile }
+// 编辑用户头像
+const updateUserPhoto = data => {
+  return request({
+    method: 'PATCH',
+    url: '/v1_0/user/photo',
+    data: data
+  })
+}
+
+export { login, sendCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile, updateUserProfile, updateUserPhoto }
